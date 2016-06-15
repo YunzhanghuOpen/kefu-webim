@@ -4,7 +4,6 @@
  */
 ;(function () {
 
-    var redpacket;
 
     easemobim.chat = function ( config ) {
 		var utils = easemobim.utils;
@@ -32,6 +31,61 @@
 		easemobim.swfupload = null;//flash 上传
 
 
+	var redpacket,
+	    redpacketToken,
+	    redpacketUserid;
+	    
+	var initRedpacket = function(params) {
+	    console.log('@initRedpacket', params);
+	    
+	    if (params.userid) {
+		redpacketUserid = params.userid;
+	    }
+	    if (params.token) {
+		redpacketToken = params.token;
+	    }
+
+	    if (!redpacketToken || !redpacketUserid) {
+		// 参数不足
+		return;
+	    }
+
+	    params = {
+		// 租户 ID
+		tenantId: config.tenantId,
+		// App Key
+		appKey: config.appKey,
+		// IM 用户名
+		username: config.user.username,
+		// IM Token
+		token: redpacketToken,
+		// 客服用户 ID
+		userid: redpacketUserid
+	    };
+	    
+	    //
+	    // 目前只有此处能拿到 token，但不能在此就初始化红包（请求云账户 token），
+	    // 因为会造成风暴，应该在红包相关业务再初始化 => 拆分
+	    // constructor 和 init
+	    //
+	    // me.conn.context 中有 accessToken，但没法 get
+	    // accessToken
+	    redpacket = new Redpacket({
+
+		// PC 版是 iframe，移动版是单独的页面，
+		// 都适于 samepage 方式打开
+		openMethod: 'samepage',
+
+		// 环信客服访客方式
+		authMethod: "easemob_kefu_customer",
+
+		// params 中需包含 userid 和 token，
+		// 但两个结果是两个异步请求得来的
+		authParams: params,
+		
+	    });
+	}
+	
 	var showWallet = function() {
 	    window.showWallet = true;
 	    // @todo 对用户展示零钱按钮
@@ -311,8 +365,10 @@
 						, tenantId: config.tenantId
 					}, function ( msg ) {
 
-					    // @todo init redpacket 改到这儿
 					    console.log('@get session', msg);
+					    initRedpacket({
+						userid: msg.data.serviceSession.visitorUser.userId
+					    });
 					    
 						if ( msg && msg.data ) {
 							var ref = config.referrer ? decodeURIComponent(config.referrer) : document.referrer;
@@ -679,50 +735,10 @@
                         me.conn.setPresence();
                         me.conn.heartBeat(me.conn);
 
-			console.log('@onOpened', {
-			    tenantId: config.tenantId,
-			    appKey: config.appKey,
-			    username: config.user.username,
-			    token: info.accessToken,
+			console.log('@on opened', info);
+			initRedpacket({
+			    token: me.token
 			});
-			//
-			// 目前只有此处能拿到 token，但不能在此就初始化红包（请求云账户 token），
-			// 因为会造成风暴，应该在红包相关业务再初始化 => 拆分
-			// constructor 和 init
-			//
-			// me.conn.context 中有 accessToken，但没法 get
-			// accessToken
-
-			
-			
-			redpacket = new Redpacket({
-
-			    // PC 版是 iframe，移动版是单独的页面，
-			    // 都适于 samepage 方式打开
-			    openMethod: 'samepage',
-
-			    // 环信客服访客方式
-			    authMethod: "easemob_kefu_customer",
-			    authParams: {
-				// 租户 ID
-				tenantId: config.tenantId,
-
-				appKey: config.appKey,
-				
-				username: config.user.username,
-
-				token: info.accessToken,
-				
-				// // 坐席 ID
-				// agentUserId: '0748b9a8-b9d5-41bb-a8ce-b405615ba12a',
-				// // Token 类型
-				// tokenName: "SESSION",
-				// // Token 值
-				// tokenValue: "b6449b2d-2c18-4fc7-a471-9f6a4bc625c6"
-			    },
-			    
-			});
-			
 			
                         if ( easemobim.textarea.value ) {
                             utils.removeClass(easemobim.sendBtn, 'disabled');
