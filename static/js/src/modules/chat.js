@@ -1,7 +1,10 @@
+
 /**
  * webim交互相关
  */
 ;(function () {
+
+    var redpacket;
 
     easemobim.chat = function ( config ) {
 		var utils = easemobim.utils;
@@ -29,6 +32,11 @@
 		easemobim.swfupload = null;//flash 上传
 
 
+	var showWallet = function() {
+	    window.showWallet = true;
+	    // @todo 对用户展示零钱按钮
+	}
+	
 		//chat window object
         return {
             init: function () {
@@ -302,6 +310,10 @@
 						, imServiceNumber: config.toUser
 						, tenantId: config.tenantId
 					}, function ( msg ) {
+
+					    // @todo init redpacket 改到这儿
+					    console.log('@get session', msg);
+					    
 						if ( msg && msg.data ) {
 							var ref = config.referrer ? decodeURIComponent(config.referrer) : document.referrer;
 							me.onlineHumanAgentCount = msg.data.onlineHumanAgentCount;
@@ -388,6 +400,7 @@
                             } else {
 								//agents' msg
 
+								// @TODO 在此要判断是否包含红包消息，如果包含，则对用户展示零钱按钮
 								//判断是否为满意度调查的消息
                                 if ( msgBody.ext && msgBody.ext.weichat && msgBody.ext.weichat.ctrlType && msgBody.ext.weichat.ctrlType == 'inviteEnquiry'
 								//机器人自定义菜单
@@ -661,10 +674,56 @@
                 
                 me.conn.listen({
                     onOpened: function ( info ) {
+
                         me.token = info.accessToken;
                         me.conn.setPresence();
                         me.conn.heartBeat(me.conn);
 
+			console.log('@onOpened', {
+			    tenantId: config.tenantId,
+			    appKey: config.appKey,
+			    username: config.user.username,
+			    token: info.accessToken,
+			});
+			//
+			// 目前只有此处能拿到 token，但不能在此就初始化红包（请求云账户 token），
+			// 因为会造成风暴，应该在红包相关业务再初始化 => 拆分
+			// constructor 和 init
+			//
+			// me.conn.context 中有 accessToken，但没法 get
+			// accessToken
+
+			
+			
+			redpacket = new Redpacket({
+
+			    // PC 版是 iframe，移动版是单独的页面，
+			    // 都适于 samepage 方式打开
+			    openMethod: 'samepage',
+
+			    // 环信客服访客方式
+			    authMethod: "easemob_kefu_customer",
+			    authParams: {
+				// 租户 ID
+				tenantId: config.tenantId,
+
+				appKey: config.appKey,
+				
+				username: config.user.username,
+
+				token: info.accessToken,
+				
+				// // 坐席 ID
+				// agentUserId: '0748b9a8-b9d5-41bb-a8ce-b405615ba12a',
+				// // Token 类型
+				// tokenName: "SESSION",
+				// // Token 值
+				// tokenValue: "b6449b2d-2c18-4fc7-a471-9f6a4bc625c6"
+			    },
+			    
+			});
+			
+			
                         if ( easemobim.textarea.value ) {
                             utils.removeClass(easemobim.sendBtn, 'disabled');
                         }
@@ -741,6 +800,9 @@
 				}
 
 				me.conn.open(op);
+
+
+		
             }
             , soundReminder: function () {
                 var me = this;
@@ -819,8 +881,25 @@
                 utils.on(document, 'mouseover', function () {
 					utils.root || transfer.send(easemobim.EVENTS.RECOVERY);
                 });
+		// @todo 可在此增加红包点击回调
 				utils.live('img.easemobWidget-imgview', 'click', function () {
 					easemobim.imgView.show(this.getAttribute('src'));
+                });
+		// utils.live('div.easemobWidget-msg-blessbag', 'click', function () {
+		utils.live('div.hb-box', 'click', function () {
+		    console.log('@click', this);
+		    
+		    redpacket.openRp(this, {
+		    	// 接收者的昵称，只显示用不做数据关联
+	  	    	Nickname: 'hehe',
+		    	// 接收者的头像，只显示用不做数据关联
+	  	    	Avatar: 'hehe', 
+		    });
+
+		    // redpacket.wallet();
+
+		    // redpacket.send({});
+
                 });
                 utils.live('button.easemobWidget-list-btn', 'mouseover', function () {
                     me.setThemeBackground(this);
@@ -1200,6 +1279,7 @@
                 var div = document.createElement('div');
                 div.className = 'emim-clear emim-mt20 emim-tl emim-msg-wrapper ';
                 div.className += isSelf ? 'emim-fr' : 'emim-fl';
+
                 utils.html(div, msg.get(!isSelf));
 
                 if ( isHistory ) {
@@ -1355,6 +1435,7 @@
 
                 var message = null;
 
+		console.log('msg', msg);
                 if ( msg.ext && msg.ext.weichat && msg.ext.weichat.ctrlType && msg.ext.weichat.ctrlType == 'inviteEnquiry' ) {
 					//满意度评价
                     type = 'satisfactionEvaluation';  
@@ -1364,8 +1445,15 @@
                 } else if ( msg.ext && msg.ext.weichat && msg.ext.weichat.ctrlType === 'TransferToKfHint' ) {
 					//机器人转人工
                     type = 'robertTransfer';  
-				}
+		    
+		// } else if ( msg.data == 'hehe' ) { // 测试条件
+		} else if ( msg.ext && msg.ext.msgtype && msg.ext.msgtype.blessbag) {
+		    //红包
+                    type = 'blessbag';
+		}
 
+		console.log(type);
+		
                 switch ( type ) {
 					//text message
 					case 'txt':
@@ -1433,6 +1521,10 @@
                         }
                         message.set({ value: msg.data || msg.ext.weichat.ctrlArgs.label, list: str });
                         break;
+		case 'blessbag':
+		    message = new Easemob.im.EmMessage('blessbag');
+                    message.set(msg.ext.msgtype.blessbag);
+		    break;
                     default: break;
                 }
                 
@@ -1475,11 +1567,14 @@
 						}
 					}
 
+		    console.log('is message null?', message);
 
 					//空消息不显示
                     if ( !message || !message.value ) {
                         return;
                     }
+
+		    console.log('message not null', message);
 
                     if ( !msg.noprompt ) {
 						me.messagePrompt(message);
@@ -1503,6 +1598,7 @@
                     if ( !message || !message.value ) {
                         return;
                     }
+		    
                     me.appendMsg(msg.from, msg.to, message, true);
                 }
             }

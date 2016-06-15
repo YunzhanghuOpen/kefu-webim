@@ -83,6 +83,7 @@
 					<i class='easemobWidget-face e-face' tile='表情'></i>\
 					<i class='easemobWidget-file' id='easemobWidgetFile' tile='图片'></i>\
 					<i class='easemobWidget-note' id='easemobWidgetNote' tile='留言'></i>\
+					<i class='easemobWidget-note' id='easemobWidgetWallet' tile='零钱'></i>\
 					<input id='easemobWidgetFileInput' type='file' accept='image/*'/>\
 					<textarea class='easemobWidget-textarea' spellcheck='false'></textarea>" +
 					(utils.isMobile || !config.satisfaction ? "" : "<span id='EasemobKefuWebimSatisfy' class='easemobWidget-satisfaction'>请对服务做出评价</span>") + "\

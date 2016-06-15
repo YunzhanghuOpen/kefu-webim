@@ -1,3 +1,4 @@
+// @todo 可在此增加红包消息渲染
 //文本消息
 Easemob.im.EmMessage.txt = function ( id ) {
 	this.id = id;
@@ -6,6 +7,7 @@ Easemob.im.EmMessage.txt = function ( id ) {
 	this.body = {};
 };
 Easemob.im.EmMessage.txt.prototype.get = function ( isReceive ) {
+    
 	if ( !this.value ) {
 		return '';
 	}
@@ -166,3 +168,51 @@ Easemob.im.EmMessage.file.prototype.set = function ( opt ) {
 		, flashUpload: opt.flashUpload
 	};
 }
+
+//红包消息
+Easemob.im.EmMessage.blessbag = function ( id ) {
+	this.id = id;
+	this.type = 'blessbag';
+	this.brief = '';
+	this.body = {};
+};
+Easemob.im.EmMessage.blessbag.prototype.get = function ( isReceive ) {
+    console.log('@blessbag getter');
+
+    console.log('@Easemob.im.EmMessage.blessbag get', this);
+    
+	if ( !this.value ) {
+		return '';
+	}
+	return [
+		!isReceive ? "<div id='" + this.id + "' class='easemobWidget-right'>" : "<div class='easemobWidget-left'>",
+			"<div class='easemobWidget-msg-wrapper easemobWidget-msg-blessbag'>",
+				"<i class='easemobWidget-corner'></i>",
+				this.id ? "<div id='" + this.id + "_failed' class='easemobWidget-msg-status hide'><span>发送失败</span><i></i></div>" : "",
+				this.id ? "<div id='" + this.id + "_loading' class='easemobWidget-msg-loading'>" + easemobim.LOADING + "</div>" : "",
+				"<div class='easemobWidget-msg-container'>",
+	    
+	    // @todo 填数据
+	    '<div class="hb-box" id="rp-' + this.blessbag.id + '" rp-id="' + this.blessbag.id + '">',
+	    '  <div class="hb-content">',
+	    '    <em class="hb-icon"></em>',
+	    '    <div class="hb-r-info">',
+	    '      <p class="hb-title">' + this.blessbag.message + '</p>',
+	    '      <p class="hb-look">查看红包</p>',
+	    '    </div>',
+	    '  </div>',
+	    '  <p class="hb-from">环信红包</p>',
+	    '</div>	    ',
+	    
+				"</div>",
+			"</div>",
+		"</div>"
+	].join('');
+};
+Easemob.im.EmMessage.blessbag.prototype.set = function ( opt ) {
+    console.log('@blessbag setter');
+    
+    this.value = '[红包]' + opt.message;
+    this.blessbag = opt;
+};
+
