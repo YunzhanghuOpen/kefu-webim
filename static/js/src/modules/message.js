@@ -180,34 +180,21 @@ Easemob.im.EmMessage.blessbag.prototype.get = function ( isReceive ) {
     console.log('@blessbag getter');
 
     console.log('@Easemob.im.EmMessage.blessbag get', this);
-    
-	if ( !this.value ) {
-		return '';
-	}
+        var title = this.blessbag.message;
+        // var title = '环信红包';
 	return [
-		!isReceive ? "<div id='" + this.id + "' class='easemobWidget-right'>" : "<div class='easemobWidget-left'>",
-			"<div class='easemobWidget-msg-wrapper easemobWidget-msg-blessbag'>",
+		!isReceive ? "<div id='" + this.id + "' class='easemobWidget-right '>" : "<div class='easemobWidget-left'>",
+			"<div class='easemobWidget-msg-wrapper easemobWidget-msg-file easemobWidgetBlessbag' rp-id='"+ this.blessbag.id + "'>",
 				"<i class='easemobWidget-corner'></i>",
-				this.id ? "<div id='" + this.id + "_failed' class='easemobWidget-msg-status hide'><span>发送失败</span><i></i></div>" : "",
-				this.id ? "<div id='" + this.id + "_loading' class='easemobWidget-msg-loading'>" + easemobim.LOADING + "</div>" : "",
-				"<div class='easemobWidget-msg-container'>",
-	    
-	    // @todo 填数据
-	    '<div class="hb-box" id="rp-' + this.blessbag.id + '" rp-id="' + this.blessbag.id + '">',
-	    '  <div class="hb-content">',
-	    '    <em class="hb-icon"></em>',
-	    '    <div class="hb-r-info">',
-	    '      <p class="hb-title">' + this.blessbag.message + '</p>',
-	    '      <p class="hb-look">查看红包</p>',
-	    '    </div>',
-	    '  </div>',
-	    '  <p class="hb-from">环信红包</p>',
-	    '</div>	    ',
-	    
+				this.id ? "<div id='" + this.id + "_failed' class='easemobWidget-msg-status em-hide'><span>发送失败</span><i></i></div>" : "",
+				this.id ? "<div id='" + this.id + "_loading' class='easemobWidget-msg-loading'>" + config.LOADING + "</div>" : "",
+				"<div class='easemobWidget-msg-container easemobWidgetBlessbagContainer' rp-id='"+ this.blessbag.id + "'>",
+					this.value === null ? "<a class='easemobWidget-noline' href='javascript:;'><i class='easemobWidget-unimage'>I</i></a>" : "<a target='_blank' href='javascript:;' class='easemobWidget-blessbagMsg' title='" + title + "'><img class='easemobWidget-msg-fileicon' src='static/img/blessbag.png'/><span>" + title + "</span></a>",
 				"</div>",
 			"</div>",
 		"</div>"
 	].join('');
+    
 };
 Easemob.im.EmMessage.blessbag.prototype.set = function ( opt ) {
     console.log('@blessbag setter');

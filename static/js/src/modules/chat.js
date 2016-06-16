@@ -925,7 +925,7 @@
 					easemobim.imgView.show(this.getAttribute('src'));
                 });
 		// utils.live('div.easemobWidget-msg-blessbag', 'click', function () {
-		utils.live('div.hb-box', 'click', function () {
+		utils.live('div.easemobWidgetBlessbagContainer', 'click', function () {
 		    console.log('@click', this);
 		    
 		    redpacket.openRp(this, {

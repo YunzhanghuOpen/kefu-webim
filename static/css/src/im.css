@@ -1281,3 +1281,15 @@ object {
 }
 @media 
 (-webkit-min-device-pixel-ratio: 2) {}
+
+.easemobWidget-left .easemobWidgetBlessbag .easemobWidget-msg-container {
+    color: #fff;
+    background-color: #ff7200;
+}
+.easemobWidget-left .easemobWidgetBlessbag a {
+    color: #fff;
+    font-size: 14px;
+}
+.easemobWidget-left .easemobWidgetBlessbag .easemobWidget-corner {
+    color: #ff7200;
+}
