@@ -73,7 +73,9 @@ button, textarea, input {
 .easemobWidget-success-prompt i,
 .easemobWidget-notem:after,
 .easemobWidget-note:after,
-.easemobWidget-file:after {
+.easemobWidget-file:after,
+.easemobWidget-wallet,
+.easemobWidget-redpacket:after {
     font-family: 'easemobim' !important;
     font-size: 30px;
     font-style: normal;
