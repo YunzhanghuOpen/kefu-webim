@@ -947,6 +947,22 @@
 		    // redpacket.send({});
 
                 });
+		utils.live('img.easemobWidget-msg-blessbagicon', 'click', function () {
+		    // @todo 此段与上面重复，需完善事件绑定，统一
+		    console.log('@click', this);
+		    
+		    redpacket.openRp(this, {
+		    	// 接收者的昵称，只显示用不做数据关联
+	  	    	Nickname: config.user.username,
+		    	// 接收者的头像，只显示用不做数据关联
+	  	    	Avatar: '', 
+		    });
+
+		    // redpacket.wallet();
+
+		    // redpacket.send({});
+
+                });
 		utils.live('div.wallet', 'click', function () {
 		    redpacket.wallet();
                 });
