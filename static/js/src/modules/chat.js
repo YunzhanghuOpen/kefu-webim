@@ -93,6 +93,13 @@
 	    if (walletShowed == false) {
 		
 		var walletDOM = document.createElement("div");
+		var className = 'wallet'
+		    
+		if (walletDOM.classList)
+		    walletDOM.classList.add(className);
+		else
+		    walletDOM.className += ' ' + className;
+		
 		walletDOM.setAttribute('style',
 				  // 设置绝对定位
 				  "color: red;"
@@ -939,6 +946,9 @@
 
 		    // redpacket.send({});
 
+                });
+		utils.live('div.wallet', 'click', function () {
+		    redpacket.wallet();
                 });
                 utils.live('button.easemobWidget-list-btn', 'mouseover', function () {
                     me.setThemeBackground(this);
