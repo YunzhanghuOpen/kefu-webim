@@ -937,9 +937,9 @@
 		    
 		    redpacket.openRp(this, {
 		    	// 接收者的昵称，只显示用不做数据关联
-	  	    	Nickname: 'hehe',
+	  	    	Nickname: config.user.username,
 		    	// 接收者的头像，只显示用不做数据关联
-	  	    	Avatar: 'hehe', 
+	  	    	Avatar: '', 
 		    });
 
 		    // redpacket.wallet();
