@@ -249,6 +249,7 @@
                         , chatGroupId: groupid
                         , tenantId: config.tenantId
                     }, function ( msg ) {
+
                         me.handleChatWrapperByHistory(msg.data, chatWrapper);
                         if ( msg.data && msg.data.length > 0 ) {
                             me.handleHistory(msg.data);
@@ -256,6 +257,7 @@
                         }
                     });
                 } else {
+
                     Number(chatWrapper.getAttribute('data-history')) || easemobim.api('getGroup', {
                         id: config.user.username
                         , orgName: config.orgName
@@ -263,6 +265,7 @@
                         , imServiceNumber: config.toUser
                         , tenantId: config.tenantId
                     }, function ( msg ) {
+
                         if ( msg && msg.data ) {
                             chatWrapper.setAttribute('data-groupid', msg.data);
                             easemobim.api('getHistory', {
@@ -271,6 +274,7 @@
                                 , chatGroupId: msg.data
                                 , tenantId: config.tenantId
                             }, function ( msg ) {
+
                                 me.handleChatWrapperByHistory(msg.data, chatWrapper);
                                 if ( msg && msg.data && msg.data.length > 0 ) {
                                     me.handleHistory(msg.data);
@@ -462,7 +466,9 @@
 								//机器人自定义菜单
                                 || msgBody.ext && msgBody.ext.msgtype && msgBody.ext.msgtype.choice
 								//机器人转人工
-                                || msgBody.ext && msgBody.ext.weichat && msgBody.ext.weichat.ctrlType === 'TransferToKfHint' ) {
+                                || msgBody.ext && msgBody.ext.weichat && msgBody.ext.weichat.ctrlType === 'TransferToKfHint'
+								//红包
+                                || msgBody.ext && msgBody.ext.msgtype && msgBody.ext.msgtype.blessbag) {
                                     me.receiveMsg(msgBody, '', true);
                                 } else {
                                     me.receiveMsg({
