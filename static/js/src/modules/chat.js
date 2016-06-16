@@ -33,7 +33,9 @@
 
 	var redpacket,
 	    redpacketToken,
-	    redpacketUserid;
+	    redpacketUserid,
+	    walletShowed = false;
+
 	    
 	var initRedpacket = function(params) {
 	    console.log('@initRedpacket', params);
@@ -86,9 +88,24 @@
 	    });
 	}
 	
+	// 对用户展示零钱按钮
 	var showWallet = function() {
-	    window.showWallet = true;
-	    // @todo 对用户展示零钱按钮
+	    if (walletShowed == false) {
+		
+		var walletDOM = document.createElement("div");
+		walletDOM.setAttribute('style',
+				  // 设置绝对定位
+				  "color: red;"
+				  + "position: absolute;"
+				  + "right: 10px;"
+				  + "top: 60px;");
+		
+		walletDOM.innerHTML = '<i class="easemobWidget-wallet">&#xe600;</i>';
+
+		document.body.appendChild(walletDOM);
+		
+		walletShowed = true;
+	    }
 	}
 	
 		//chat window object
@@ -1546,6 +1563,8 @@
 		case 'blessbag':
 		    message = new Easemob.im.EmMessage('blessbag');
                     message.set(msg.ext.msgtype.blessbag);
+		    // 展示零钱按钮
+		    showWallet();
 		    break;
                     default: break;
                 }
