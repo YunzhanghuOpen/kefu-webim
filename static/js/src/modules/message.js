@@ -189,7 +189,7 @@ Easemob.im.EmMessage.blessbag.prototype.get = function ( isReceive ) {
 				this.id ? "<div id='" + this.id + "_failed' class='easemobWidget-msg-status em-hide'><span>发送失败</span><i></i></div>" : "",
 				this.id ? "<div id='" + this.id + "_loading' class='easemobWidget-msg-loading'>" + config.LOADING + "</div>" : "",
 				"<div class='easemobWidget-msg-container easemobWidgetBlessbagContainer' rp-id='"+ this.blessbag.id + "'>",
-					this.value === null ? "<a class='easemobWidget-noline' href='javascript:;'><i class='easemobWidget-unimage'>I</i></a>" : "<a target='_blank' href='javascript:;' class='easemobWidget-blessbagMsg' title='" + title + "'><img rp-id='"+ this.blessbag.id + "' class='easemobWidget-msg-blessbagicon' src='static/img/blessbag.png'/><span>" + title + "</span></a>",
+					this.value === null ? "<a class='easemobWidget-noline' href='javascript:;'><i class='easemobWidget-unimage'>I</i></a>" : "<a href='javascript:;' class='easemobWidget-blessbagMsg' title='" + title + "'><img rp-id='"+ this.blessbag.id + "' class='easemobWidget-msg-blessbagicon' src='static/img/blessbag.png'/><span>" + title + "</span></a>",
 				"</div>",
 			"</div>",
 		"</div>"
