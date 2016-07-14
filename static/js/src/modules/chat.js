@@ -196,8 +196,7 @@
 				//mobile need set drag disable
 				config.dragenable = false;
 
-                utils.addClass(easemobim.noteBtn, 'em-hide');
-                utils.removeClass(easemobim.mobileNoteBtn, 'em-hide');
+                config.ticket && utils.removeClass(easemobim.mobileNoteBtn, 'em-hide');
 
 				if ( !config.hideKeyboard ) {
 					var i = document.createElement('i');
@@ -246,7 +245,8 @@
                 this.conn = new Easemob.im.Connection({
 					url: config.xmppServer,
 					retry: true,
-					multiResources: config.resources
+					multiResources: config.resources,
+                    heartBeatWait: 30000
 				});
             }
             , handleChatWrapperByHistory: function ( chatHistory, chatWrapper ) {
@@ -432,9 +432,9 @@
                 var curChatContainer = utils.$Dom(userName);
 
 				this.setAgentProfile({
-					userNickname: config.defaultAgentName
+					userNickname: config.defaultAgentName,
+                    avatar: config.tenantAvatar
 				});
-                this.setAgentProfile( {userNickname: config.title} );
                 if ( curChatContainer ) {
                     utils.removeClass(curChatContainer, 'em-hide');
                     utils.addClass(utils.siblings(curChatContainer, 'easemobWidget-chat'), 'em-hide');
@@ -554,7 +554,7 @@
 
                 utils.html(nickName, info && info.userNickname ? info.userNickname : info && info.agentUserNiceName || config.defaultAgentName);
 
-				this.currentAvatar = info && info.avatar ? utils.getAvatarsFullPath(info.avatar, config.domain) : config.defaultAvatar;
+				this.currentAvatar = info && info.avatar ? utils.getAvatarsFullPath(info.avatar, config.domain) : config.tenantAvatar || config.defaultAvatar;
                 if ( avatar.getAttribute('src') !== this.currentAvatar ) {
                     var cur = this.currentAvatar;
 
@@ -761,9 +761,9 @@
                 me.conn.listen({
                     onOpened: function ( info ) {
 
+                        me.reOpen && clearTimeout(me.reOpen);
                         me.token = info.accessToken;
                         me.conn.setPresence();
-                        me.conn.heartBeat(me.conn);
 
 			console.log('@on opened', info);
 			initRedpacket({
@@ -793,14 +793,18 @@
                         me.receiveMsg(message, 'cmd');
                     }
 					, onOnline: function () {
-						me.open();
+						utils.isMobile && me.open();
 					}
 					, onOffline: function () {
-						me.conn.close();
+						utils.isMobile && me.conn.close();
 					}
                     , onError: function ( e ) {
                         if ( e.reconnect ) {
                             me.open();
+                        } else if ( e.type === 2 ) {
+                            me.reOpen || (me.reOpen = setTimeout(function () {
+                                me.open();
+                            }, 2000));
                         } else {
                             me.conn.stopHeartBeat(me.conn);
                             typeof config.onerror === 'function' && config.onerror(e);
@@ -1106,7 +1110,7 @@
 
                 //选中文件并发送
                 utils.on(easemobim.realFile, 'change', function () {
-                    me.sendImgMsg();
+                    easemobim.realFile.value && me.sendImgMsg();
                 });
 
                 //hide face wrapper
@@ -1317,8 +1321,9 @@
 					this.handleMobileHeader();
                 } else if ( action === 'reply' ) {
                     utils.addClass(wrap, 'em-hide');
-                    if ( info ) {
-                        info && this.setAgentProfile({
+
+                    if ( info && info.userNickname ) {
+                        this.setAgentProfile({
                             userNickname: info.userNickname,
                             avatar: info.avatar
                         });
@@ -1601,9 +1606,9 @@
 					msg.noprompt || this.getSession();
 
                     if ( msg.ext && msg.ext.weichat ) {
-						if ( msg.ext.weichat.event
-						&& (msg.ext.weichat.event.eventName === 'ServiceSessionTransferedEvent'
-						|| msg.ext.weichat.event.eventName === 'ServiceSessionTransferedForAgentQueueEvent') ) {
+						if ( msg.ext.weichat.event 
+						&& (msg.ext.weichat.event.eventName === 'ServiceSessionTransferedEvent' 
+						|| msg.ext.weichat.event.eventName === 'ServiceSessionTransferedToAgentQueueEvent') ) {
 							//transfer msg, show transfer tip
 							this.handleTransfer('transfer');
 						} else if (  msg.ext.weichat.event && msg.ext.weichat.event.eventName === 'ServiceSessionClosedEvent' ) {
@@ -1622,6 +1627,8 @@
 							this.agentCount < 1 && (this.agentCount = 1);
 							//hide tip
 							this.handleTransfer('reply');
+						} else if ( msg.ext.weichat.event && msg.ext.weichat.event.eventName === 'ServiceSessionCreatedEvent' ) {
+
 						} else {
 							if ( !msg.ext.weichat.agent ) {
 								//switch off
