@@ -1,3 +1,4 @@
+// @todo 可在此增加红包消息渲染
 //文本消息
 Easemob.im.EmMessage.txt = function ( id ) {
 	this.id = id;
@@ -6,6 +7,7 @@ Easemob.im.EmMessage.txt = function ( id ) {
 	this.body = {};
 };
 Easemob.im.EmMessage.txt.prototype.get = function ( isReceive ) {
+    
 	if ( !this.value ) {
 		return '';
 	}
@@ -166,3 +168,38 @@ Easemob.im.EmMessage.file.prototype.set = function ( opt ) {
 		, flashUpload: opt.flashUpload
 	};
 }
+
+//红包消息
+Easemob.im.EmMessage.blessbag = function ( id ) {
+	this.id = id;
+	this.type = 'blessbag';
+	this.brief = '';
+	this.body = {};
+};
+Easemob.im.EmMessage.blessbag.prototype.get = function ( isReceive ) {
+    console.log('@blessbag getter');
+
+    console.log('@Easemob.im.EmMessage.blessbag get', this);
+        var title = this.blessbag.message;
+        // var title = '环信红包';
+	return [
+		!isReceive ? "<div id='" + this.id + "' class='easemobWidget-right '>" : "<div class='easemobWidget-left'>",
+			"<div class='easemobWidget-msg-wrapper easemobWidget-msg-file easemobWidgetBlessbag' rp-id='"+ this.blessbag.id + "'>",
+				"<i class='easemobWidget-corner'></i>",
+				this.id ? "<div id='" + this.id + "_failed' class='easemobWidget-msg-status em-hide'><span>发送失败</span><i></i></div>" : "",
+				this.id ? "<div id='" + this.id + "_loading' class='easemobWidget-msg-loading'>" + config.LOADING + "</div>" : "",
+				"<div class='easemobWidget-msg-container easemobWidgetBlessbagContainer' rp-id='"+ this.blessbag.id + "'>",
+					this.value === null ? "<a class='easemobWidget-noline' href='javascript:;'><i class='easemobWidget-unimage'>I</i></a>" : "<a href='javascript:;' class='easemobWidget-blessbagMsg' title='" + title + "'><img rp-id='"+ this.blessbag.id + "' class='easemobWidget-msg-blessbagicon' src='static/img/blessbag.png'/><span>" + title + "</span></a>",
+				"</div>",
+			"</div>",
+		"</div>"
+	].join('');
+    
+};
+Easemob.im.EmMessage.blessbag.prototype.set = function ( opt ) {
+    console.log('@blessbag setter');
+    
+    this.value = '[红包]' + opt.message;
+    this.blessbag = opt;
+};
+

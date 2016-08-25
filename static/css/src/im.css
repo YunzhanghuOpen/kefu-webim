@@ -2,7 +2,7 @@ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,
 	margin: 0;
 	padding: 0;
     -webkit-text-size-adjust: none;
-	-moz-text-size-adjust:none; 
+	-moz-text-size-adjust:none;
 	-ms-text-size-adjust: none;
 	-o-text-size-adjust: none;
 	text-size-adjust: none;
@@ -11,7 +11,7 @@ html,body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,
 	-ms-appearance: none;
 	-o-appearance: none;
 	appearance: none;
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0); 
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
     -webkit-tap-highlight-color: transparent;
 }
 html, body {
@@ -73,7 +73,9 @@ button, textarea, input {
 .easemobWidget-success-prompt i,
 .easemobWidget-notem:after,
 .easemobWidget-note:after,
-.easemobWidget-file:after {
+.easemobWidget-file:after,
+.easemobWidget-wallet,
+.easemobWidget-redpacket:after {
     font-family: 'easemobim' !important;
     font-size: 30px;
     font-style: normal;
@@ -524,7 +526,7 @@ button, textarea, input {
 	height: 80px;
 	overflow: hidden;
 }
-img.easemobWidget-msg-fileicon {
+img.easemobWidget-msg-fileicon,img.easemobWidget-msg-blessbagicon {
 	width: 80px;
     height: 80px;
     position: absolute;
@@ -1281,5 +1283,39 @@ object {
     height: 32px;
     line-height: 32px;
 }
-@media 
+@media
 (-webkit-min-device-pixel-ratio: 2) {}
+
+.easemobWidget-left .easemobWidgetBlessbag .easemobWidget-msg-container {
+	max-width: 220px;
+	min-width: 220px;
+    color: #fff;
+    background-color: #ff7200;
+}
+.easemobWidget-left .easemobWidgetBlessbag .easemobWidget-msg-container span {
+	width: 64%;
+	white-space:normal;
+	text-overflow:inherit;
+	text-align: justify;
+
+}
+.easemobWidget-left .easemobWidgetBlessbag a {
+    color: #fff;
+    font-size: 14px;
+}
+.easemobWidget-left .easemobWidgetBlessbag .easemobWidget-corner {
+    color: #ff7200;
+}
+.wallet {
+	border: 1px solid #ff7200;
+	border-radius: 50%;
+	cursor: pointer;
+	background: #ff7200;
+}
+.wallet i {
+	width: 30px;
+	height: 30px;
+	display: block;
+	line-height: 36px;
+	color: #fff;
+}

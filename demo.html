@@ -58,9 +58,9 @@
 			tenantId: '',										//租户id
 			to: '',												//指定关联对应的im号
 			appKey: '',											//关联的appkey,				appKey: 'orgName#appName'
-			domain: '',											//环信移动客服域,			domain: '//kefu.easemob.com', 
-			path: '',											//im.html的本机服务器路径,	path: '//XXX'
-			staticPath: '',										//访客插件static的路径,		staticPath: '//XXX/static'
+			domain: '//kefu.easemob.com',											//环信移动客服域,			domain: '//kefu.easemob.com', 
+			path: '',											//im.html的本机服务器路径,	path: '//XXX/webim'
+			staticPath: '',										//访客插件static的路径,		staticPath: '//XXX/webim/static'
 			xmppServer: '',										//环信IM服务器,				xmppServer: 'im-api.easemob.com'
 			restServer: '',										//环信REST服务器,			restServer: 'a1.easemob.com'
 			visitor: '',										//访客信息
@@ -68,7 +68,7 @@
 			ticket: true,										//是否展示留言入口
 			hideStatus: false,									//是否显示转接中，正在排队等提示
             
-            /*extMsg: {                                           //移动端点击联系客服按钮自动发送订单消息demo
+            extMsg: {                                           //移动端点击联系客服按钮自动发送订单消息demo
                 "imageName": "mallImage3.png",
                 "type": "custom",
                 "msgtype": {
@@ -81,7 +81,7 @@
                         "item_url": "http://www.baidu.com?s=order_sn/123123"
                     }
                 }
-            },*/
+            },
 			autoConnect: false,									//自动连接
 			buttonText: '联系客服',								//设置小按钮的文案
 			hide: false,											//是否隐藏小的悬浮按钮
@@ -97,7 +97,7 @@
 			onmessage: function ( message ) { },				//收消息回调, 只对当前打开的聊天窗口有效
 			onready: function () { 
                 //PC端点击联系客服按钮自动发送订单消息demo
-                /*easemobim.sendExt({ext: {
+		easemobim.sendExt({ext: {
                     "imageName": "mallImage3.png",
                     "type": "custom",
                     "msgtype": {
@@ -110,7 +110,7 @@
                             "item_url": "http://www.baidu.com?s=order_sn/123123"
                         }
                     }
-                }});*/
+                }});
             },							//聊天窗口加载成功回调
 			onsessionclosed: function () { },					//会话结束回调
 
@@ -128,5 +128,6 @@
 	</script>
 
 	<script src='/webim/easemob.js'></script>
+	
 </body>
 </html>

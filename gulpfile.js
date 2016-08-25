@@ -52,7 +52,7 @@ gulp.task('cssmin', function() {
 //watch
 gulp.task('watch', function() {
 	gulp.watch(['static/js/src/*.js', 'static/js/src/*/*.js'], ['uglify']);
-	gulp.watch(['static/css/src/*.js'], ['cssmin']);
+	gulp.watch(['static/css/src/*.css'], ['cssmin']);
 });
 
 
