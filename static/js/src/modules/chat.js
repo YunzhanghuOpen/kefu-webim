@@ -62,7 +62,9 @@
 		// IM Token
 		token: redpacketToken,
 		// 客服用户 ID
-		userid: redpacketUserid
+		userid: redpacketUserid,
+		// 访客信息
+		visitor: config.visitor
 	    };
 
 	    //
